@@ -1,0 +1,38 @@
+<ul>
+    <li>
+        <form #locData="ngForm" (ngSubmit)="locatePoint(locData.value)">
+            <input type="number" name="xCoordinate"  placeholder=" coordinate X" ngModel> 
+            <input type="number" name="yCoordinate" placeholder=" coordinate Y" ngModel>
+            <input type="number" name="zoomLevel" placeholder=" zoom level" ngModel> 
+
+            <input type="submit" value="Locate">
+        </form>
+    </li>
+
+    <li>
+        <form #locText="ngForm" (ngSubmit)="getPositionByName(locText.value)">
+            <input type="text" name="locaText" placeholder=" Enter Location name" ngModel> 
+            <input type="submit" value="Locate">
+        </form>
+    </li>
+
+    <li>
+        <form #locText="ngForm" (ngSubmit)="locateMe()">    
+            <input type="submit" value="Locate Me">
+        </form>
+    </li>
+
+    <li>
+        <form #locText="ngForm" (ngSubmit)="trackUser()">    
+            <input type="submit" value="Track User">
+        </form>
+    </li>
+
+
+</ul>
+
+<div id="map" style="margin-left:50px;height: 550px; width:1220px; border:solid 1px #111;">
+
+
+</div><br>
+

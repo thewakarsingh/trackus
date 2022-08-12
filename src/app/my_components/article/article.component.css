@@ -1,0 +1,79 @@
+.purple{
+    color: rgb(75, 10, 75);
+    font-weight: 600;
+}
+
+.text-vertical{
+    vertical-align: 0px;
+}
+
+.blue{
+    
+    color: rgb(43, 43, 165);
+    margin: 3px;
+
+    
+}
+
+.align-vertical{
+    vertical-align: 8px;
+}
+
+.left{
+    align-self: left;
+    margin: 4px;
+}
+
+.right{
+    margin-left: 4px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.header{
+    display: flex;
+    margin-left: 40px;
+    font-size: 20;
+    margin: 20px;
+    padding: 20px;
+    font-size: 20px;
+}
+.header-item-right{
+    margin-left:30px;
+    
+}
+
+.material-symbols-outlined{
+    font-size: 32px;
+
+}
+
+.article-body .material-symbols-outlined{
+
+    font-size: 24px;
+
+
+}
+
+.body-box{
+    height: 500px;
+    border-radius: 16px;
+    margin: 16px;
+    padding: 16px;
+    background-color: white;
+  
+}
+

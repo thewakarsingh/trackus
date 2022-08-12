@@ -1,0 +1,150 @@
+<div class="header" >
+    <span class="material-symbols-outlined">menu</span>  
+    <div><img style="margin-left:30px; margin-right:30px;height:40px;width: 130px;" src="https://www.ultimatix.net/content/dam/ultimatix-portal/ultimatix_logo.png"></div>
+    <div>Contextual Master<sup>TM</sup>2.0</div>
+    <div style="margin-left:556px;">
+    <span  class="header-item-right material-symbols-outlined">
+        notifications
+        </span>
+    <span style="color:blue;"class="header-item-right material-symbols-outlined">
+        account_circle
+    </span>
+    <span class="header-item-right material-symbols-outlined">
+        power_settings_new
+        </span> 
+    </div>
+</div>
+
+
+
+<div class="article-body" style="display: flex; background-color: #eee;">
+    <div class="write-box body-box " style="width:60%;">
+        <div class="write-box-header">
+            <span class="material-symbols-outlined blue">
+                undo
+            </span>
+            
+            <span class="material-symbols-outlined blue">
+                redo
+            </span> 
+
+            <button (click)="save(article.value)" style="border:0px; background-color:white"><span class="material-symbols-outlined blue" style="margin-left:8px;" >
+                save
+            </span>  
+            </button>
+
+            <span class="right align-vertical" style="margin-left: 24%;">Total word Count:</span> <span class="purple right align-vertical">620/800 words</span>
+
+            <span class="right align-vertical" style="margin-left:4%;"> Read Time:</span>
+            
+            <span class="material-symbols-outlined purple right" >
+                timer
+                </span>
+            <span class="purple right align-vertical" > minutes read</span>
+        </div>
+
+        <hr style="color: #999;">
+
+        <textarea #article style="border:none; height:90%; width:100%; outline: 0px solid transparent;" placeholder="Write or Paste your text here!"></textarea>
+
+    </div>
+
+    <div class="suggetion-box body-box right" style="width: 20%; margin-right: 3px;">
+        <div class="suggestion-box-header">
+            <span class="material-symbols-outlined blue left" style="vertical-align: 0px;">  
+                assistant
+            </span>
+            <span class="blue left align-vertical" 
+            >Suggestions</span>
+
+            <span class="material-symbols-outlined " style="margin-left: 32%;">
+                expand_less
+            </span>
+            
+            <span class="material-symbols-outlined blue" style="margin-left: 29%; margin-top: 100px; font-size:88px;">
+               draw
+            </span>
+
+
+
+
+
+            
+        </div>
+    
+
+    </div>
+
+    <div class="checklist-box body-box" style="width: 20%; margin-left:0%;">
+        <div class="checklist-box-header">
+            <span class="material-symbols-outlined left">
+                checklist
+                </span>
+            <span class="blue left align-vertical">Checklist</span>
+
+            <span class="material-symbols-outlined right" style="margin-left: 40%">
+                expand_less
+                </span>
+            
+        </div>
+
+        <div class="checklist-box-body"  style="margin-left:1%;">
+
+            <h4> This is this This is this This is this This is this 
+                This is this.
+            </h4>
+
+         <mat-accordion>
+                <mat-expansion-panel hideToggle>
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      This is the expansion title
+                    </mat-panel-title>
+                    <mat-panel-description>
+                      This is a summary of the content
+                    </mat-panel-description>
+                  </mat-expansion-panel-header>
+                  <p>This is the primary content of the panel.</p>
+                </mat-expansion-panel>
+                <mat-expansion-panel (opened)="panelOpenState = true"
+                                     (closed)="panelOpenState = false">
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      Self aware panel
+                    </mat-panel-title>
+                    <mat-panel-description>
+                      Currently I am {{panelOpenState ? 'open' : 'closed'}}
+                    </mat-panel-description>
+                  </mat-expansion-panel-header>
+                  <p>I'm visible because I am open</p>
+                </mat-expansion-panel>
+              </mat-accordion>      
+        
+            
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="footer" style="background-color: #eee; display: flex;">
+    <img src="data:image/png;base64,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" 
+     style=" margin-left:5px;margin-top:15px;height:60px;width: 150px;">
+
+     <p style="width:800px; align-self: right; margin-bottom:10px; margin-left: 400px; font-size: 12px;">
+                                            to tcsCopyright claim to tcs
+                                            Ultimatix Release ver. 14.9.0-91607 | Copyright © 2022 Tata Consultancy Services
+                                            Third Party Notices | Privacy Policy | Terms of Use | Browser and Display Compatibility
+    </p>
+
+</div>
