@@ -57,7 +57,7 @@ const currentLocationObservable = new BehaviorSubject(asa);
 const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 18,
       minZoom: 3,
-      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     });
 
     tiles.addTo(map);
@@ -137,7 +137,7 @@ const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', 
     const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
           maxZoom: 18,
           minZoom: 2,
-        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
       });  
       tiles.addTo(map);
 
@@ -204,7 +204,7 @@ const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', 
   getPositionByName(val:any){
 
     console.log("location");
-    var url='http://api.openweathermap.org/geo/1.0/direct?q='+val.locaText+'&limit=5&appid=5a22019dff039c0bd66cea0f22484083';
+    var url='https://api.openweathermap.org/geo/1.0/direct?q='+val.locaText+'&limit=5&appid=5a22019dff039c0bd66cea0f22484083';
       var url2='https://maps.googleapis.com/maps/api/geocode/json?address='+val.locaText+'&key=AIzaSyD8rcu_ZggvN3JtOiHuwEF3-N9mehg0av8';
     var res=this.http.get(url);
    // var a=res[0].name;
@@ -269,7 +269,7 @@ const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', 
 
       const locationCoord = { xCoordinate: res.lat , yCoordinate: res.lng ,zoomL: 11, circle: true};
 
-      var url= 'http://api.openweathermap.org/geo/1.0/reverse?lat='+res.lat+'&lon='+res.lng+'&limit=5&appid=5a22019dff039c0bd66cea0f22484083';
+      var url= 'https://api.openweathermap.org/geo/1.0/reverse?lat='+res.lat+'&lon='+res.lng+'&limit=5&appid=5a22019dff039c0bd66cea0f22484083';
      // var url2=url;
       var resultW=this.http.get(url);
    // var a=res[0].name;
