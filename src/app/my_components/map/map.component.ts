@@ -497,6 +497,8 @@ const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', 
       }
     })
 
+    console.log("function completed;")
+
     }, 15000);
 
 
