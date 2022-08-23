@@ -6,7 +6,7 @@ import { LocationInfo, User } from '../setdata/user';
 import { variable } from '@angular/compiler/src/output/output_ast';
 import * as geojson from 'geojson';
 import { getValue } from '@ngxs/store';
-
+import {RealtimeTracker} from './realtimetracking'
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
@@ -16,14 +16,32 @@ export class MapComponent implements OnInit {
 
 
 
-
   private mapp:any ;
 
   prevPoint:LocationInfo={lat:23,log:85,point:1};
   currentLocationObservable = new BehaviorSubject(this.prevPoint);
 
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, 
+  //public ht:RealtimeTracker
+    ) {
+
+   // ht.readCurrentPosion();
+
+
+   var url="https://trackusdatabase-default-rtdb.asia-southeast1.firebasedatabase.app/location.json";
+    var data={
+      lat:"23",
+      log:"211"
+    };
+
+   var res=this.http.post(url,data);
+   var resss=this.http.get(url);
+   console.log("hello:");
+   console.log(res); 
+   var dataa=res.subscribe(data=>console.log(data));
+   console.log(dataa);
+
 
     var liveTrack:LocationInfo[]=[];
 
@@ -265,6 +283,7 @@ const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', 
 
   locateMe(){
 
+
     this.getCurrentPosition().then(res=>{
 
       const locationCoord = { xCoordinate: res.lat , yCoordinate: res.lng ,zoomL: 11, circle: true};
@@ -412,6 +431,75 @@ const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', 
        this.drawLine(a,b);
       }
   });
+
+  }
+
+
+  trackLive(){
+
+    var idd=1122;
+
+
+    setInterval(() => {
+
+      navigator.geolocation.getCurrentPosition(resp => {
+
+        var id=1234;
+
+        var url="https://trackusdatabase-default-rtdb.asia-southeast1.firebasedatabase.app/"+id+".json/";
+
+        const d = new Date();
+
+        var tim=d.getTime();
+
+      var data={
+        id:id,
+        time:tim,
+        lat:resp.coords.latitude,
+        log:resp.coords.longitude,
+        accu:resp.coords.accuracy,
+        speed:resp.coords.speed
+      };
+     var res=this.http.post(url,data);
+
+     var locationCoord = {
+      xCoordinate: data.lat, 
+     yCoordinate: data.log,
+     zoomL: 12,
+     circle:true,
+     name:"aas",
+     country: "India",
+     state: "Bihar"
+
+      };
+      this.locatePoint(locationCoord);
+
+     var resss=this.http.get(url);
+     console.log("hello:");
+     console.log(res); 
+     var dataa=res.subscribe(data=>console.log(data));
+     console.log(dataa);
+  
+
+     });
+
+
+
+     this.currentLocationObservable.subscribe({
+      next: (value) => {
+        var a:LocationInfo={lat: this.prevPoint.lat,log:this.prevPoint.log,point:this.prevPoint.point};
+        var b:LocationInfo={lat:value.lat,log:value.log,point:1};
+
+       //var map=this.mapp.setView([b.lat, b.log], 9);
+
+        console.log("a:"+this.prevPoint.lat+","+this.prevPoint.log+"b:"+b.lat+","+b.log)
+       this.drawLine(a,b);
+      }
+    })
+
+    }, 15000);
+
+
 
   }
 

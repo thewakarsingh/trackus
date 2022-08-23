@@ -5,9 +5,11 @@ import { interval, merge,from, of,retry, throwError, concatAll, concat, timer, c
 import { LocationInfo, User } from '../setdata/user';
 import { variable } from '@angular/compiler/src/output/output_ast';
 import * as geojson from 'geojson';
+//import { AngularFireDatabase, AngularFireList } from '@angular/fire/database';
 
 
-export class RealtimeTracker{
+
+export class  RealtimeTracker{
 
 
   
@@ -37,6 +39,15 @@ export class RealtimeTracker{
       }
 
       readCurrentPosion(){
+
+
+        var url="https://trackusdatabase-default-rtdb.asia-southeast1.firebasedatabase.app/";
+
+        var res=this.http.get(url);
+        console.log("hello");
+        console.log(res); 
+        var dataa=res.subscribe(data=>console.log("From server Firebase:"+ data));
+        console.log(dataa);
 
 
         // var url='https://api.openweathermap.org/data/2.5/forecast/daily?lat='+res.lat+'&lon='+res.lng+'&appid=3b5a27eca817cf9eac1374c7d17b546c&units=metric';

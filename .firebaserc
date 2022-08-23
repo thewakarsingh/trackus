@@ -1,5 +1,14 @@
 {
   "projects": {
-    "default": "trackus-604c4"
+    "default": "trackusdatabase"
+  },
+  "targets": {
+    "trackusdatabase": {
+      "hosting": {
+        "test-nds": [
+          "trackusdatabase"
+        ]
+      }
+    }
   }
 }
