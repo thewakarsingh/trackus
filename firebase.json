@@ -1,6 +1,6 @@
 {
   "hosting": [
-    {
+    {"target": "app",
       "public": "dist/test-nds",
       "ignore": [
         "firebase.json",
