@@ -1,12 +1,14 @@
-import { Component, OnInit, } from '@angular/core';
+import { Component, Injectable, OnInit, } from '@angular/core';
 import * as L from 'leaflet';
 import { HttpClient } from '@angular/common/http'
 import { interval, merge,from, of,retry, throwError, concatAll, concat, timer, catchError, map,tap } from 'rxjs';
-import { LocationInfo, User } from '../setdata/user';
+import { LocationInfo, User } from '../../../app/Models/user';
 import { variable } from '@angular/compiler/src/output/output_ast';
 import * as geojson from 'geojson';
 //import { AngularFireDatabase, AngularFireList } from '@angular/fire/database';
 
+
+@Injectable ()
 
 
 export class  RealtimeTracker{

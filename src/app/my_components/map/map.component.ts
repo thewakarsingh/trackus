@@ -1,33 +1,61 @@
 import { Component, OnInit, } from '@angular/core';
 import * as L from 'leaflet';
-import { HttpClient } from '@angular/common/http'
+import { HttpClient, HttpErrorResponse } from '@angular/common/http'
 import { interval, merge,from, of,retry, throwError, concatAll, concat, timer, catchError, map,tap, BehaviorSubject, last, first } from 'rxjs';
-import { LocationInfo, User } from '../setdata/user';
+import { LocationInfo,AddressInfo, User } from '../../../app/Models/user';
 import { variable } from '@angular/compiler/src/output/output_ast';
 import * as geojson from 'geojson';
 import { getValue } from '@ngxs/store';
 import {RealtimeTracker} from './realtimetracking'
+import { DatePipe } from '@angular/common'
+import {SupportFunctions} from 'src/app/my_components/map/supportFiles'
+import { FormControl } from '@angular/forms';
+import { Router } from '@angular/router';
+
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.css']
 })
+
+
 export class MapComponent implements OnInit {
 
+  public apiKey="7a7c964d5f4884fa02fff35e39b1edca";
 
+  public username="";
+
+  public  trackingStatus=false;
+
+  public liveTrackingStatus=false;
+
+  public trackingAccuracy=0;
+
+  public trackingStatusMsg="";
+
+  public liveTrackingMsg="";
 
   private mapp:any ;
 
-  prevPoint:LocationInfo={lat:23,log:85,point:1};
+  prevPoint:LocationInfo={lat:-1,log:-1,point:1};
   currentLocationObservable = new BehaviorSubject(this.prevPoint);
+  date1 =new Date();
 
 
-  constructor(private http: HttpClient, 
+  constructor(
+  
+
+    private router: Router,
+    private http: HttpClient,
+    private datepipe: DatePipe,
+    private fun:SupportFunctions
   //public ht:RealtimeTracker
     ) {
+      
+
+    //  date = new Date((new Date().getTime() - 3888000000));
 
    // ht.readCurrentPosion();
-
 
    var url="https://trackusdatabase-default-rtdb.asia-southeast1.firebasedatabase.app/location.json";
     var data={
@@ -67,66 +95,64 @@ const currentLocationObservable = new BehaviorSubject(asa);
   ngOnInit(): void {
 
 
+    if(sessionStorage.getItem('username')==null)
+    {
+         if(localStorage.getItem('username')==null){
+              this.router.navigate([""]);
+            }
+          else{
+            var aass=localStorage.getItem('username');
+            sessionStorage.setItem('username',JSON.stringify(aass));
+
+          }
+        }
+
     this.mapp= L.map('map');
 
     var map=this.mapp.setView([1, 1], 1);
 
 
 const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 18,
+      maxZoom: 20,
       minZoom: 3,
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     });
 
+
+    var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '© OpenStreetMap'
+});
+
+
+var littleton = L.marker([39.61, -105.02]).bindPopup('This is Littleton, CO.'),
+    denver    = L.marker([39.74, -104.99]).bindPopup('This is Denver, CO.'),
+    aurora    = L.marker([39.73, -104.8]).bindPopup('This is Aurora, CO.'),
+    golden    = L.marker([39.77, -105.23]).bindPopup('This is Golden, CO.');
+
+
+var streets = L.tileLayer("", {id: 'mapbox/streets-v11', tileSize: 512, zoomOffset: -1, attribution: ""});
+var cities = L.layerGroup([littleton, denver, aurora, golden]);
+
+
+
+
+    var baseMaps = {
+      "OpenStreetMap": osm,
+      "Mapbox Streets": streets
+  };
+  
+  var overlayMaps = {
+    "Cities": cities
+  };
+
+    var layerControl = L.control.layers(baseMaps, overlayMaps).addTo(map);
+
+    
+
     tiles.addTo(map);
 
-         
-  //   var basemaps = {
-  //     Topography: L.tileLayer.wms('http://ows.mundialis.de/services/service?', {
-  //         layers: 'TOPO-WMS'
-  //     }),
-  
-  //     Places: L.tileLayer.wms('http://ows.mundialis.de/services/service?', {
-  //         layers: 'OSM-Overlay-WMS'
-  //     }),
-  
-  //     'Topography, then places': L.tileLayer.wms('http://ows.mundialis.de/services/service?', {
-  //         layers: 'TOPO-WMS,OSM-Overlay-WMS'
-  //     }),
-  
-  //     'Places, then topography': L.tileLayer.wms('http://ows.mundialis.de/services/service?', {
-  //         layers: 'OSM-Overlay-WMS,TOPO-WMS'
-  //     })
-  // };
-  
-  // L.control.layers(basemaps).addTo(map);
-  
-  // basemaps.Topography.addTo(map);
-
-
-
-//   var baseMaps = {
-//     "<span style='color: gray'>Grayscale</span>": grayscale,
-//     "Streets": streets
-// };
-
-// var layerControl = L.control.layers(baseMaps, overlayMaps).addTo(map);
-
-//   var crownHill = L.marker([39.75, -105.09]).bindPopup('This is Crown Hill Park.'),
-//     rubyHill = L.marker([39.68, -105.00]).bindPopup('This is Ruby Hill Park.');
-    
-// var parks = L.layerGroup([crownHill, rubyHill]);
-// var satellite = L.tileLayer(mapboxUrl, {id: 'MapID', tileSize: 512, zoomOffset: -1, attribution: mapboxAttribution});
-
-// layerControl.addBaseLayer(satellite, "Satellite");
-// layerControl.addOverlay(parks, "Parks");
-
  }
-
-
-
-
-  
 
   locatePoint(val:any): void{
     //mapp.remove();
@@ -142,8 +168,8 @@ const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', 
         this.prevPoint.log=value.log;  
         this.prevPoint.point=value.point;
 
-        console.log("prev:");
-        console.log(this.prevPoint)
+     //   console.log("prev:");
+       // console.log(this.prevPoint)
       });
 
     var loc:LocationInfo={lat:xCod,log:yCod,point:1}
@@ -222,7 +248,8 @@ const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', 
   getPositionByName(val:any){
 
     console.log("location");
-    var url='https://api.openweathermap.org/geo/1.0/direct?q='+val.locaText+'&limit=5&appid=5a22019dff039c0bd66cea0f22484083';
+
+    var url='https://api.openweathermap.org/geo/1.0/direct?q='+val.locaText+'&limit=5&appid='+this.apiKey+'';
       var url2='https://maps.googleapis.com/maps/api/geocode/json?address='+val.locaText+'&key=AIzaSyD8rcu_ZggvN3JtOiHuwEF3-N9mehg0av8';
     var res=this.http.get(url);
    // var a=res[0].name;
@@ -288,7 +315,7 @@ const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', 
 
       const locationCoord = { xCoordinate: res.lat , yCoordinate: res.lng ,zoomL: 11, circle: true};
 
-      var url= 'https://api.openweathermap.org/geo/1.0/reverse?lat='+res.lat+'&lon='+res.lng+'&limit=5&appid=5a22019dff039c0bd66cea0f22484083';
+      var url= 'https://api.openweathermap.org/geo/1.0/reverse?lat='+res.lat+'&lon='+res.lng+'&limit=5&appid='+this.apiKey+'';
      // var url2=url;
       var resultW=this.http.get(url);
    // var a=res[0].name;
@@ -372,24 +399,27 @@ const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', 
       L.geoJSON(hLine).addTo(this.mapp);
 
     }
+    public publicMarker = new L.Marker([1,1]);
 
 
 
 
 
 
-  drawLine(a:LocationInfo,b:LocationInfo){
 
+  drawLine(a:LocationInfo,b:LocationInfo, info:AddressInfo){
 
    // var map=this.mapp.setView([b.lat, b.log], 1);
 
+   var map=this.mapp.setView([b.lat,  b.log], b.point);
 
     var myStyle = {
         "color": "blue",
-        "weight": 1,
-        "opacity":0.8
+        "weight": 4,
+        "opacity":1,
+        
     };
-    var geojsonPoint: geojson.LineString = {
+    var line: geojson.LineString = {
       type: "LineString",
       coordinates: [
 
@@ -406,39 +436,64 @@ const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', 
       ]
     };
 
-    L.geoJSON(geojsonPoint).addTo(this.mapp);
 
-
-    L.geoJSON(geojsonPoint, {
+    L.geoJSON(line, {
       style: myStyle
     }).addTo(this.mapp);
 
-  }
-
-
-
-
-  trackUser(){
-
-    this.currentLocationObservable.subscribe({
-      next: (value) => {
-        var a:LocationInfo={lat: this.prevPoint.lat,log:this.prevPoint.log,point:this.prevPoint.point};
-        var b:LocationInfo={lat:value.lat,log:value.log,point:1};
-
-        var map=this.mapp.setView([b.lat, b.log], 9);
-
-        console.log("a:"+this.prevPoint.lat+","+this.prevPoint.log+"b:"+b.lat+","+b.log)
-       this.drawLine(a,b);
-      }
+    var liveIconOld = L.icon({
+      iconUrl: '../../../assets/as/oldicon.png',
+  
+        iconSize:     [15, 15], // size of the icon
+        iconAnchor:   [10, 15], // point of the icon which will correspond to marker's location
   });
 
+  var liveIcon = L.icon({
+    iconUrl: '../../assets/as/newicon.png',
+
+      iconSize:     [30, 30], // size of the icon
+      iconAnchor:   [10, 15], // point of the icon which will correspond to marker's location
+});
+
+  map.removeLayer(this.publicMarker);
+  //this.publicMarker.setLatLng([a.lat, a.log]);
+
+  
+  this.publicMarker.setIcon(liveIconOld);
+  map.addLayer(this.publicMarker);
+
+ // map.addLayer(this.publicMarker);
+
+ var publicMarkerLive = new L.Marker([b.lat, b.log]);
+
+publicMarkerLive.setLatLng([b.lat, b.log]);
+publicMarkerLive.setIcon(liveIcon);
+
+publicMarkerLive.bindPopup("Address: "+info.name+", "+info.state+", "+info.country+" "+"<br>"+"Speed: "+info.speed+" Km/h");
+
+//var  marker = new L.Marker([b.lat, b.log],{icon: liveIcon});
+  
+ map.addLayer(publicMarkerLive);
+this.publicMarker=publicMarkerLive;
+
   }
 
 
-  trackLive(){
+  sendTracking(){
+    
+    
+    var email=sessionStorage.getItem('username');
+    var username=JSON.stringify(email)
+
+    username =  username.replace(/[&\/\\#^+()$~%.'":*?<>{}!@]/g, '') ;
+    username=username.replace(/\s/g, '')
+
+    var zoom=18;
 
     var idd=1122;
 
+    var date = new Date();
+    var LatDate:any =this.datepipe.transform(date, 'dd_MM_YYYY');
 
     setInterval(() => {
 
@@ -446,63 +501,35 @@ const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', 
 
         var id=1234;
 
-        var url="https://trackusdatabase-default-rtdb.asia-southeast1.firebasedatabase.app/"+id+".json/";
-
-        const d = new Date();
-
-        var tim=d.getTime();
+        var url="https://trackusdatabase-default-rtdb.asia-southeast1.firebasedatabase.app/"+username+"_"+LatDate+".json";
 
       var data={
-        id:id,
-        time:tim,
+    
+        speed:resp.coords.speed,
+        time:resp.timestamp,
         lat:resp.coords.latitude,
         log:resp.coords.longitude,
         accu:resp.coords.accuracy,
-        speed:resp.coords.speed
-      };
-     var res=this.http.post(url,data);
+        altitude:resp.coords.altitude,
+        direction:resp.coords.heading
+          }
+        
+      ;
 
-     var locationCoord = {
-      xCoordinate: data.lat, 
-     yCoordinate: data.log,
-     zoomL: 12,
-     circle:true,
-     name:"aas",
-     country: "India",
-     state: "Bihar"
+  var res=this.http.post(url,data);
+  var result=this.http.get(url);
 
-      };
-      this.locatePoint(locationCoord);
+ var dataa=res.subscribe(data=>{var a=2;});//
 
-     var resss=this.http.get(url);
-     console.log("hello:");
-     console.log(res); 
-     var dataa=res.subscribe(data=>console.log(data));
-     console.log(dataa);
-  
 
      });
 
 
+    } , 10000);
 
-     this.currentLocationObservable.subscribe({
-      next: (value) => {
-        var a:LocationInfo={lat: this.prevPoint.lat,log:this.prevPoint.log,point:this.prevPoint.point};
-        var b:LocationInfo={lat:value.lat,log:value.log,point:1};
+    this.fun.openSnackBar("You are Now being Tracked on Id: " +email,"Close");
 
-       //var map=this.mapp.setView([b.lat, b.log], 9);
-
-        console.log("a:"+this.prevPoint.lat+","+this.prevPoint.log+"b:"+b.lat+","+b.log)
-       this.drawLine(a,b);
-      }
-    })
-
-    console.log("function completed;")
-
-    }, 15000);
-
-
-
+this.trackingStatus=true;
   }
 
 
@@ -514,23 +541,199 @@ const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', 
 
 
 
+
+trackUser(emailid:any)
+{
+
+
+  var email=emailid.emailId;
+    var username=JSON.stringify(email)
+
+    username =  username.replace(/[&\/\\#^+()$~%.'":*?<>{}!@]/g, '') ;
+    username=username.replace(/\s/g, '')
+
+
+
+  var LatDate:any =this.datepipe.transform(emailid.date, 'dd_MM_YYYY');
+
+//console.log(email.emailId);
+var url="https://trackusdatabase-default-rtdb.asia-southeast1.firebasedatabase.app/"+username+"_"+LatDate+".json/";
+
+var result=this.http.get(url);
+
+if(result){
+
+  var data=result.subscribe(data=>{
+
+    if (!data) {
+
+      this.fun.openSnackBar("No tracking Data for given data.","Close");
+      return;
+
+    } 
+    
+
+    const keys = Object.keys(data);
+  
+    const entries = Object.entries(data);
+
+    entries.forEach(([key, value]) => {
+      // 👇️ name Tom, country Chile
+      //console.log(key, value.lat);
+  
+      var locationCoord = {
+        xCoordinate: value.lat, 
+       yCoordinate: value.log,
+       zoomL: 18,
+       circle:false,
+       name:"",
+       country: "India",
+       state: ""
+  
+        };
+  
+        var b:LocationInfo={lat: locationCoord.xCoordinate, log:locationCoord.yCoordinate, point:locationCoord.zoomL};
+  
+        if(this.prevPoint.lat==-1&&this.prevPoint.log==-1)
+          var a:LocationInfo=b;
+        else
+          var a:LocationInfo=this.prevPoint;
+  
+          var info:AddressInfo=this.fun.locationDetails(a,b);
+        //  console.log(this.info);
+  
+      setTimeout(() => {  console.log(this.fun.info); }, 5000);
+      this.drawLine(a,b,this.fun.info);    
+  
+      this.prevPoint=b;
+  
+      });
+  
+    
+  },
+  error => {
+    console.log(error);
+  
+  }
+    );
+  
+  
+      setInterval(() => {
+  
+        url='https://trackusdatabase-default-rtdb.asia-southeast1.firebasedatabase.app/'+username+"_"+LatDate+'.json?orderBy="$key"&limitToLast=1';
+  
+  
+        var result=this.http.get(url);
+        
+        var dataa=result.subscribe(data=>{
+  
+         // console.log(data);
+  
+            for (const key in data) {
+            
+              const keys = Object.keys(data);
+            
+              const entries = Object.entries(data);
+              
+              entries.forEach(([key, value]) => {
+                // 👇️ name Tom, country Chile
+              //  console.log(key, value.lat);
+            
+                var locationCoord = {
+                  xCoordinate: value.lat, 
+                 yCoordinate: value.log,
+                 zoomL: value.zoomL,
+                 circle:false,
+                 accuracy:value.accu,
+                 name:"",
+                 country: "India",
+                 state: "",
+                 time:value.time
+            
+                  };
+  
+                  this.trackingAccuracy=Math.round(locationCoord.accuracy);
+  
+                  var b:LocationInfo={lat: locationCoord.xCoordinate, log:locationCoord.yCoordinate, point:locationCoord.zoomL};
+  
+                  if(this.prevPoint.lat==0&&this.prevPoint.log==0)
+                    var a:LocationInfo=b;
+                  else
+                    var a=this.prevPoint;
+
+                  var  now = new Date();
+                    var h=now.getMinutes();
+                    var t=new Date(locationCoord.time);
+                  
+                    this.liveTrackingStatus=true;
+
+
+                    if(t.getHours()>12){
+                          this.liveTrackingMsg=t.getHours()-12+":"+t.getMinutes()+" pm";
+                        }
+                        else{
+                           this.liveTrackingMsg=t.getHours()+":"+t.getMinutes()+" am";
+                      }
+
+
+                  //   if(t.getHours()==now.getHours()&&t.getMinutes()==now.getMinutes()){
+
+                     this.liveTrackingStatus=true;
+
+                  //   }
+                  //   else{
+                  //     if(t.getHours()>12){
+                  //     this.liveTrackingMsg=t.getHours()-12+":"+t.getMinutes()+" pm";
+                  //   }
+                  //   else{
+                  //      this.liveTrackingMsg=t.getHours()+":"+t.getMinutes()+" am";
+                  // }
+                  //     this.liveTrackingStatus=false;
+
+                  //   }
+  
+                  //   if( this.liveTrackingStatus==true)
+                  //     {
+                 var info:AddressInfo=this.fun.locationDetails(a,b);
+                    console.log(this.fun.info);
+                this.drawLine(a,b,this.fun.info);    
+                
+                this.prevPoint=b;
+           //           }
+                });
+            
+              }
+            });
+  
+  
+  
+      }, 15000);
+  
+        
+  
+  
+    }
+  
+
+
+    else{
+
+      console.log(result)
+      
+      this.fun.openSnackBar("No tracking Data for given data.","Close");
+
+
+    }
+  }
+
+
+public logout(){
+  localStorage.removeItem('username');
+  sessionStorage.removeItem('username');
+  this.router.navigate(["/"]);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+}
 
 // Wheather Forcast
 

@@ -1,0 +1,19 @@
+<div class="login-wrapper" fxLayout="row" fxLayoutAlign="center center" >
+    <div class="box" >
+      <div>
+        <div>Log in</div>
+      </div>
+      <form class="example-form" #userData="ngForm" (ngSubmit)="onSubmit(userData.value)">
+        <div>
+          <mat-form-field class="example-full-width">
+            <input type="email" matInput placeholder="Username" required name="username" ngModel>
+          </mat-form-field>
+          <mat-form-field class="example-full-width">
+            <input type="password" matInput placeholder="Password" name="password" ngModel required>
+          </mat-form-field>
+        </div>
+        <button mat-stroked-button color="blue" class="btn-block">Log in</button>
+      </form>
+    </div>
+  </div>
+  
