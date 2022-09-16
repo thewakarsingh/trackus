@@ -16,10 +16,10 @@ export class RegistrationComponent implements OnInit {
   ngOnInit(): void {
 
     if(sessionStorage.getItem('username')!=null)
-    this.router.navigate(["/header"]);
+    this.router.navigate(["/home"]);
 else
     if(localStorage.getItem('username')!=null)
-    this.router.navigate(["/header"]);
+    this.router.navigate(["/home"]);
 
 
   }
@@ -30,7 +30,7 @@ else
     localStorage.setItem('username',val.username);
     sessionStorage.setItem('username',val.username);
 
-    this.router.navigate(["/header"]);
+    this.router.navigate(["/home"]);
  
     //this.serve.uploadData(this.userModel).subscribe(data=> this.userModel=data);
  
