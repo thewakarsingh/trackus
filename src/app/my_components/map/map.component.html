@@ -4,15 +4,7 @@
 
     <mat-tab label="Send Tracking"> 
 
-        <form #giveLoc="ngForm" (ngSubmit)="sendTracking()">
-
-            <button style="margin-left: 20px;" mat-button ng-click="sendTracking(giveLoc.value)" mat-button >Allow Tracking</button>
-        
-        </form>
-        <span *ngIf="trackingStatus==true">Being tracked...  </span>
-
-        <img  *ngIf="trackingStatus==true" style="height:20px ;width:20px;" src="../../../assets/as/green.gif   ">
-
+       
     </mat-tab>
 
     <mat-tab label="Track">
@@ -55,8 +47,6 @@
 
 
         </form> 
-
-        <button mat-button  (click)="logout()">Logout</button>
 
     </mat-tab>
 

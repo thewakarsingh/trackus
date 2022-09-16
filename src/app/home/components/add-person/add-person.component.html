@@ -1,0 +1,9 @@
+<form #locText="ngForm" (ngSubmit)="addPerson(locText.value)">
+<span> Enter email id of User you want to Track</span>
+    <mat-form-field class="example-full-width" appearance="fill">
+        <mat-label>Enter Email ID </mat-label>
+        <input matInput name="emailid" ngModel  required>
+    </mat-form-field>
+    <button mat-button  ng-click="getPositionByName(locText.value)">Add Person</button>
+    
+</form> 

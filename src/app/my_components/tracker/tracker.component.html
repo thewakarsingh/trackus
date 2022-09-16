@@ -1,0 +1,34 @@
+<div style="margin-left: 20%; margin-top: 4%;">
+
+    <form #trackUserEmail="ngForm" (ngSubmit)="trackUser(trackUserEmail.value)">
+
+                <input matInput [matDatepicker]="picker1" placeholder="From Date" [(ngModel)]="date1" name="date" style="display:none;">
+                <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                <mat-datepicker  #picker1></mat-datepicker>
+
+
+        <button mat-button primary ng-click="trackUser(trackUserEmail.value)"  style="  border: solid 1px green; border-radius: 2px; width: 200px;">
+            
+          Track/ Refresh </button>
+    </form>
+
+    <br>
+
+<span *ngIf="trackingAccuracy!=0">Accurate Within: {{trackingAccuracy}} Meters  </span>
+
+
+<!-- <span *ngIf="trackingAccuracy!=0&&liveTrackingStatus==true"> online </span> -->
+<img  *ngIf="trackingAccuracy!=0&&liveTrackingStatus==true" style="height:20px ;width:20px;" src="../../../assets/as/green.gif   ">
+
+<span *ngIf="trackingAccuracy!=0&&liveTrackingStatus==true"> Last Updated: {{liveTrackingMsg}}  </span>
+<img  *ngIf="trackingAccuracy!=0&&liveTrackingStatus==false" style="height:20px ;width:20px;" src="../../../assets/as/red.png   ">
+</div>
+
+<div>
+
+    
+</div>
+
+<div style="margin-top: 2%; height:88%; position:-webkit-sticky;">
+<div id="map" style="border: solid 1px #123; height:100%; width:100%; "></div>
+</div>

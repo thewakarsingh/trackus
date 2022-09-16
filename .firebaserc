@@ -1,14 +1,15 @@
 {
   "projects": {
-    "default": "trackusdatabase"
+    "default": "trackusDatabase"
   },
   "targets": {
     "trackusdatabase": {
       "hosting": {
-        "test-nds": [
-          "trackusdatabase"
+        "track": [
+          "trackusDatabase"
         ]
       }
     }
-  }
+  },
+  "etags": {}
 }

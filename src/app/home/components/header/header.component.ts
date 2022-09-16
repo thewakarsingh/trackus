@@ -93,9 +93,6 @@ export class HeaderComponent implements OnInit {
 
 addPerson(){
 
-  this.router.navigate(["/home/addperson"]);
-
-
 }
 
 
@@ -127,7 +124,7 @@ showInstructions(){
 public logout(){
   localStorage.removeItem('username');
   sessionStorage.removeItem('username');
-  this.router.navigate(["/login"]);
+  this.router.navigate(["/app"]);
 }
 
 }
